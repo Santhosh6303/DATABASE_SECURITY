@@ -77,6 +77,70 @@ BEGIN
 END;
 ```
 
+#### Example 4: Using a Cursor in a Stored Procedure
+```sql
+DELIMITER //
+
+CREATE PROCEDURE UpdateStudentGrades()
+BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE student_id INT;
+    DECLARE total_marks DECIMAL(5,2);
+    DECLARE grade CHAR(1);
+    
+    -- Declare cursor for fetching student data
+    DECLARE student_cursor CURSOR FOR 
+        SELECT id, total_marks FROM Student;
+    
+    -- Declare handler for when no more rows to fetch
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    
+    -- Open the cursor
+    OPEN student_cursor;
+    
+    -- Start the loop
+    read_loop: LOOP
+        -- Fetch the next row
+        FETCH student_cursor INTO student_id, total_marks;
+        
+        -- Exit loop if no more rows
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        
+        -- Determine grade based on total marks
+        SET grade = CASE
+            WHEN total_marks >= 90 THEN 'A'
+            WHEN total_marks >= 80 THEN 'B'
+            WHEN total_marks >= 70 THEN 'C'
+            WHEN total_marks >= 60 THEN 'D'
+            ELSE 'F'
+        END;
+        
+        -- Update the student's grade
+        UPDATE Student
+        SET grade = grade
+        WHERE id = student_id;
+        
+    END LOOP;
+    
+    -- Close the cursor
+    CLOSE student_cursor;
+END //
+
+DELIMITER ;
+```
+
+This example demonstrates how to use a cursor in a stored procedure:
+
+1. We declare a cursor that selects student IDs and total marks from the Student table.
+2. We use a loop to fetch each row from the cursor.
+3. For each student, we calculate a grade based on their total marks.
+4. We then update the student's grade in the database.
+5. The process continues until all rows have been processed.
+
+Cursors are useful when you need to perform operations on each row in a result set individually. However, they can be less efficient than set-based operations for large datasets, so use them judiciously.
+
 ## Triggers
 
 ### Definition
@@ -134,7 +198,6 @@ END;
 ```
 
 ## Practice Exercises
-
 1. Create a stored procedure to transfer money between two accounts.
 2. Write a trigger to prevent negative balance in a bank account.
 3. Develop a stored procedure to calculate and update interest for savings accounts.
