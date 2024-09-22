@@ -77,7 +77,7 @@ ALTER USER 'bookstore_admin'@'localhost' IDENTIFIED WITH sha256_password BY 'new
 
 ```sql
 SELECT user, host, plugin, password_expired, password_lifetime, account_locked
-FROM mysql.user WHERE user LIKE 'bookstore%' OR user = 'shravasti_ohol';
+FROM mysql.user WHERE user LIKE 'bookstore%' OR user = 'santhosh_cheemala';
 ```
 
 ### 4. Additional Security Features
