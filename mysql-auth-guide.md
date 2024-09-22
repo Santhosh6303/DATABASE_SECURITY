@@ -43,6 +43,17 @@ CREATE USER 'bookstore_admin'@'localhost' IDENTIFIED BY 'strong_password';
 
 -- Create a user with specific authentication plugin
 CREATE USER 'bookstore_reader'@'localhost' IDENTIFIED WITH mysql_native_password BY 'reader_password';
+
+-- Create a user with advanced security options
+CREATE USER 'shravasti_ohol'@'localhost'
+    IDENTIFIED WITH caching_sha2_password BY 'Password2024!'
+    PASSWORD EXPIRE INTERVAL 180 DAY
+    FAILED_LOGIN_ATTEMPTS 3 PASSWORD_LOCK_TIME 2;
+
+-- Explanation of advanced options:
+-- - Uses caching_sha2_password for authentication
+-- - Password expires every 180 days
+-- - Account locks for 2 days after 3 failed login attempts
 ```
 
 ### 2. Changing Authentication Plugin
@@ -65,7 +76,25 @@ ALTER USER 'bookstore_admin'@'localhost' IDENTIFIED WITH sha256_password BY 'new
 ### 3. Viewing User Authentication
 
 ```sql
-SELECT user, host, plugin FROM mysql.user WHERE user LIKE 'bookstore%';
+SELECT user, host, plugin, password_expired, password_lifetime, account_locked
+FROM mysql.user WHERE user LIKE 'bookstore%' OR user = 'shravasti_ohol';
+```
+
+### 4. Additional Security Features
+
+```sql
+-- Set password strength policy
+SET GLOBAL validate_password.policy = STRONG;
+SET GLOBAL validate_password.length = 12;
+
+-- Require SSL for user connections
+ALTER USER 'bookstore_admin'@'localhost' REQUIRE SSL;
+
+-- Set account to expire on a specific date
+ALTER USER 'seasonal_user'@'localhost' PASSWORD EXPIRE AT '2024-12-31';
+
+-- Prevent user from changing their own password
+ALTER USER 'restricted_user'@'localhost' PASSWORD EXPIRE NEVER;
 ```
 
 ## Authorization
@@ -120,5 +149,3 @@ GRANT 'order_processor' TO 'bookstore_manager'@'localhost';
 -- User needs to activate the roles in their session
 SET ROLE 'book_editor', 'order_processor';
 ```
-
-Remember to always follow the principle of least privilege: grant users only the permissions they need to perform their tasks.
