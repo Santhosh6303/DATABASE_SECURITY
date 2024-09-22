@@ -288,5 +288,3 @@ SELECT COUNT(*)
 FROM Student 
 WHERE sName LIKE 'A%' OR sName LIKE 'B%' OR sName LIKE 'C%';
 ```
-
-Remember to adapt these queries to your specific database schema and requirements. Practice these queries to solidify your understanding before the exam.
