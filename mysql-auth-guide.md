@@ -45,7 +45,7 @@ CREATE USER 'bookstore_admin'@'localhost' IDENTIFIED BY 'strong_password';
 CREATE USER 'bookstore_reader'@'localhost' IDENTIFIED WITH mysql_native_password BY 'reader_password';
 
 -- Create a user with advanced security options
-CREATE USER 'shravasti_ohol'@'localhost'
+CREATE USER 'santhosh_Cheemala'@'localhost'
     IDENTIFIED WITH caching_sha2_password BY 'Password2024!'
     PASSWORD EXPIRE INTERVAL 180 DAY
     FAILED_LOGIN_ATTEMPTS 3 PASSWORD_LOCK_TIME 2;
